@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>생명의 강 교회 - 생수의 강이 흘러 넘치는 교회</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 헤더 스타일 */
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #2980b9, #e67e22, #2980b9);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .church-info {
+            text-align: left;
+        }
+        
+        .church-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-family: 'Nanum Myeongjo', serif;
+            background: linear-gradient(45deg, #a0d2ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .church-slogan {
+            font-size: 1.2rem;
+            color: #e67e22;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .church-name-en {
+            font-size: 1rem;
+            color: #ecf0f1;
+            opacity: 0.8;
+        }
+        
+        /* 네비게이션 */
+        nav {
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 20px 25px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffd700;
+        }
+        
+        nav ul li a.active {
+            background-color: #e67e22;
+            color: white;
+        }
+        
+        /* 히어로 섹션 */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1515895309288-a3815ab7cf81?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 100px 0;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #2980b9, #e67e22, #2980b9);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-family: 'Nanum Myeongjo', serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, #2980b9, #e67e22);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #e67e22, #2980b9);
+        }
+        
+        /* 섹션 공통 스타일 */
+        section {
+            padding: 60px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-family: 'Nanum Myeongjo', serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #2980b9, #e67e22);
+            border-radius: 2px;
+        }
+        
+        .section-header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 700px;
+            margin: 20px auto 0;
+        }
+        
+        /* 예배 안내 섹션 */
+        .worship-schedule {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .worship-item {
+            background: linear-gradient(to bottom, #ffffff, #f5f9ff);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border-left: 4px solid #2980b9;
+        }
+        
+        .worship-item:hover {
+            transform: translateY(-5px);
+            border-left: 4px solid #e67e22;
+        }
+        
+        .worship-item h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #a0d2ff;
+            font-size: 1.5rem;
+        }
+        
+        .worship-time {
+            font-weight: bold;
+            color: #e67e22;
+            margin: 15px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .worship-time::before {
+            content: '⏰';
+            margin-right: 8px;
+            color: #2980b9;
+        }
+        
+        /* 프로그램 섹션 */
+        .programs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .program-item {
+            background: linear-gradient(to bottom, #ffffff, #f5f9ff);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border-top: 4px solid transparent;
+            background-image: linear-gradient(white, white), 
+                              linear-gradient(to right, #2980b9, #e67e22);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+        
+        .program-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .program-item h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .program-item h3::before {
+            content: '✓';
+            color: #e67e22;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .program-item p {
+            color: #555;
+        }
+        
+        /* 갤러리 섹션 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .gallery-item {
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* 연락처 섹션 */
+        .contact-info {
+            background: linear-gradient(to bottom, #ffffff, #f5f9ff);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            max-width: 800px;
+            margin: 0 auto;
+            border-top: 4px solid #e67e22;
+        }
+        
+        .contact-item {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            background-color: rgba(41, 128, 185, 0.1);
+        }
+        
+        .contact-item i {
+            width: 40px;
+            color: #e67e22;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .contact-detail {
+            font-size: 1.1rem;
+        }
+        
+        /* 지도 */
+        .map {
+            margin-top: 40px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 3px solid transparent;
+            background-image: linear-gradient(white, white), 
+                              linear-gradient(to right, #2980b9, #e67e22);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+        }
+        
+        /* 푸터 */
+        footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #2980b9, #e67e22, #2980b9);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #a0d2ff;
+        }
+        
+        .footer-section p {
+            margin-bottom: 10px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .church-info {
+                margin-bottom: 20px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li a {
+                padding: 15px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="church-info">
+                <div class="church-name">생명의 강 교회</div>
+                <div class="church-slogan">생수의 강이 흘러 넘치는 교회</div>
+                <div class="church-name-en">The River of Life Church</div>
+            </div>
+            <div class="header-buttons">
+                <a href="#contact" class="btn">방문 안내</a>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container nav-container">
+            <ul>
+                <li><a href="#" class="active">홈</a></li>
+                <li><a href="#worship">예배 안내</a></li>
+                <li><a href="#programs">사역 프로그램</a></li>
+                <li><a href="#gallery">교회 갤러리</a></li>
+                <li><a href="#about">교회 소개</a></li>
+                <li><a href="#contact">연락처</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="hero">
+        <div class="container">
+            <h1>은혜와 진리로 세워지는 교회</h1>
+            <p>생명의 강 교회에 오신 것을 환영합니다. 우리는 예수 그리스도의 사랑을 전하며 믿음으로 함께 걸어가는 언약 공동체입니다.</p>
+            <a href="#worship" class="btn">예배 시간 보기</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <section id="worship">
+            <div class="section-header">
+                <h2>예배 안내</h2>
+                <p>생명의 강 교회에서 함께 드리는 예배 시간입니다</p>
+            </div>
+            
+            <div class="worship-schedule">
+                <div class="worship-item">
+                    <h3>주일 예배</h3>
+                    <p>주일오전예배</p>
+                    <div class="worship-time">오전 11시</div>
+                    <p>주일오후예배</p>
+                    <div class="worship-time">오후 2시</div>
+                </div>
+                
+                <div class="worship-item">
+                    <h3>주중 예배</h3>
+                    <p>아침예배 (월~금)</p>
+                    <div class="worship-time">오전 8시 30분</div>
+                    <p>수요저녁예배</p>
+                    <div class="worship-time">오후 7시 30분</div>
+                    <p>금요철야예배</p>
+                    <div class="worship-time">오후 9시</div>
+                </div>
+                
+                <div class="worship-item">
+                    <h3>특별 예배</h3>
+                    <p>매월 네 번째 주일저녁찬양예배</p>
+                    <div class="worship-time">오후 7시 30분</div>
+                    <p>침노하는 자들의 모임(중보기도회)</p>
+                    <div class="worship-time">목요일 오전 11시</div>
+                </div>
+                
+                <div class="worship-item">
+                    <h3>주일학교 예배</h3>
+                    <p>유치부 · 유초등부</p>
+                    <div class="worship-time">오전 9시 30분</div>
+                    <p>중고등부 · 청년부</p>
+                    <div class="worship-time">오후 1시 20분</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="programs">
+            <div class="section-header">
+                <h2>사역 프로그램</h2>
+                <p>생명의 강 교회에서 진행하는 다양한 사역 프로그램</p>
+            </div>
+            
+            <div class="programs">
+                <div class="program-item">
+                    <h3>성경 공부</h3>
+                    <p>"주 예수 그리스도의 언약과 생명, 교회"를 주제로 한 깊이 있는 성경 공부 프로그램입니다. 말씀 안에서 참된 생명의 길을 발견하는 시간입니다.</p>
+                </div>
+                
+                <div class="program-item">
+                    <h3>중보기도회</h3>
+                    <p>침노하는 자들의 모임으로 불리는 중보기도회는 교회와 성도들을 위한 간절한 기도로 하나님의 은혜와 능력을 체험하는 소중한 시간입니다. 다른 교회 지체도 함께합니다.</p>
+                </div>
+                
+                <div class="program-item">
+                    <h3>목회자 양성</h3>
+                    <p>다음 세기를 이끌어갈 목회자를 양성하는 프로그램으로, 신학적 기초와 실천적 사역을 겸비한 미래 지도자들을 준비시키고 있습니다.</p>
+                </div>
+                
+                <div class="program-item">
+                    <h3>차세대 말씀 양육</h3>
+                    <p>어린이와 청소년들을 위한 체계적인 신앙 교육 프로그램으로, 말씀 안에서 자라나는 건강한 다음 세대를 세워갑니다.</p>
+                </div>
+                
+                <div class="program-item">
+                    <h3>선교와 봉사</h3>
+                    <p>지역사회와 세계를 향한 선교와 봉사 활동으로 하나님의 사랑을 실천하며, 예수 그리스도의 복음을 전파합니다.</p>
+                </div>
+                
+                <div class="program-item">
+                    <h3>가정 사역</h3>
+                    <p>가정의 거룩함과 화목을 도모하는 다양한 프로그램으로, 그리스도 안에 있는 가정을 세워가도록 돕습니다.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gallery">
+            <div class="section-header">
+                <h2>교회 갤러리</h2>
+                <p>생명의 강 교회의 특별한 순간들</p>
+            </div>
+            
+            <div class="gallery">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1464207687429-7505649dae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="교회 예배">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1515895309288-a3815ab7cf81?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="성경 공부">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581276879432-15e50529f34b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="친교 시간">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="기도회">
+                </div>
+            </div>
+        </section>
+        
+        <section id="about">
+            <div class="section-header">
+                <h2>교회 소개</h2>
+                <p>생명의 강 교회는</p>
+            </div>
+            
+            <div class="program-item">
+                <h3>우리의 신앙</h3>
+                <p>교회는 주예수 그리스도의 몸입니다(엡5:23). 우리는 하나님과 새 언약을 맺은 백성으로 주예수께서 우리의 머리이심을 고백합니다. 성경이 하나님의 영감으로 주어진(inspired) 말씀이며, 믿음과 생활에 있어 최종적인 권위임을 믿습니다.</p>
+                <p>우리는 아버지와 아들, 성령이 한 하나님을 믿습니다(마28:19,20). 주예수그리스도께서 보내신 성령의 인도하심을 따라 인간의 구원은 오직 주예수 그리스도의 대속적인 죽음과 부활을 통하여 가능함을 선포합니다.</p>
+                
+                <h3>교회 비전</h3>
+                <p>생명의 강 교회는 말씀과 기도로 무장된 제자를 세우고, 생명의 복음을 전파하며, 사랑과 섬김으로 지역사회와 세계에 영향을 미치는 공동체가 되는 것을 비전으로 합니다.</p>
+            </div>
+        </section>
+        
+        <section id="contact">
+            <div class="section-header">
+                <h2>연락처</h2>
+                <p>생명의 강 교회로 오시는 길</p>
+            </div>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="contact-detail">02-2601-1591</div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="contact-detail">rolchurch@gmail.com</div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="contact-detail">서울시 양천구 신월동 20-22 생명의 강 교회 (The River of Life Church)</div>
+                </div>
+            </div>
+            
+            <div class="map">
+                <img src="https://via.placeholder.com/1200x500?text=Church+Location+Map" alt="교회 위치 지도" style="width: 100%;">
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>생명의 강 교회</h3>
+                    <p>생수의 강이 흘러 넘치는 교회</p>
+                    <p>The River of Life Church</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>예배 시간</h3>
+                    <p>주일 오전: 11:00</p>
+                    <p>주일 오후: 14:00</p>
+                    <p>수요 저녁: 19:30</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>연락처</h3>
+                    <p>Tel: 02-2601-1591</p>
+                    <p>Email: rolchurch@gmail.com</p>
+                    <p>서울시 양천구 신월동 20-22</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>생명의 강 교회 © 2025. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
