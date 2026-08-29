@@ -3,682 +3,1140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>생명의 강 교회 - 생수의 강이 흘러 넘치는 교회</title>
+    <title>생명의 강 교회 | 생수의 강이 흘러 넘치는 교회</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
-        /* 기본 스타일 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            color: #333;
-            line-height: 1.6;
-            background-color: #f9f9f9;
+            background-color: #F9F6F0;
+            color: #3A2E2A;
+            -webkit-font-smoothing: antialiased;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .font-serif-heading {
+            font-family: 'Nanum Myeongjo', serif;
         }
         
-        /* 헤더 스타일 */
-        header {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
-            color: white;
-            padding: 25px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
+        .font-sans-body {
+            font-family: 'Noto Sans KR', sans-serif;
         }
         
-        header::before {
-            content: '';
-            position: absolute;
+        .bg-noise {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #2980b9, #e67e22, #2980b9);
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.15;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: multiply;
         }
         
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #F9F6F0; }
+        ::-webkit-scrollbar-thumb { background: #D06B4A; border-radius: 10px; }
+        
+        ::selection { background: #D06B4A; color: #FDFBF7; }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(45, 36, 33, 0.15);
         }
         
-        .church-info {
-            text-align: left;
-        }
-        
-        .church-name {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-family: 'Nanum Myeongjo', serif;
-            background: linear-gradient(45deg, #a0d2ff, #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .church-slogan {
-            font-size: 1.2rem;
-            color: #e67e22;
-            margin-bottom: 10px;
+        .btn-primary {
+            background: #D06B4A;
+            color: #FDFBF7;
+            padding: 14px 32px;
+            border-radius: 9999px;
             font-weight: 500;
-        }
-        
-        .church-name-en {
-            font-size: 1rem;
-            color: #ecf0f1;
-            opacity: 0.8;
-        }
-        
-        /* 네비게이션 */
-        nav {
-            background: linear-gradient(to right, #2980b9, #2c3e50);
-            padding: 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-        
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            position: relative;
-        }
-        
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding: 20px 25px;
-            display: block;
             transition: all 0.3s ease;
-        }
-        
-        nav ul li a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ffd700;
-        }
-        
-        nav ul li a.active {
-            background-color: #e67e22;
-            color: white;
-        }
-        
-        /* 히어로 섹션 */
-        .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1515895309288-a3815ab7cf81?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 100px 0;
-            margin-bottom: 40px;
-            position: relative;
-        }
-        
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 10px;
-            background: linear-gradient(90deg, #2980b9, #e67e22, #2980b9);
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            font-family: 'Nanum Myeongjo', serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
-        }
-        
-        .btn {
             display: inline-block;
-            background: linear-gradient(to right, #2980b9, #e67e22);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 30px;
-            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(208, 107, 74, 0.25);
+        }
+        .btn-primary:hover {
+            background: #B55737;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(208, 107, 74, 0.35);
+        }
+        
+        .btn-secondary {
+            background: #314F40;
+            color: #FDFBF7;
+            padding: 14px 32px;
+            border-radius: 9999px;
             font-weight: 500;
             transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 14px rgba(49, 79, 64, 0.25);
+        }
+        .btn-secondary:hover {
+            background: #233A2D;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(49, 79, 64, 0.35);
+        }
+        
+        .section-underline::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #D06B4A, #D1A741);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+        
+        .img-zoom {
+            transition: transform 0.5s ease;
+        }
+        .img-zoom:hover {
+            transform: scale(1.04);
+        }
+
+        /* 모달 스타일 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 36, 33, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #FDFBF7;
+            border-radius: 2rem;
+            padding: 40px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 30px 60px rgba(45, 36, 33, 0.25);
+            animation: modalFade 0.3s ease;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-box h2 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2D2421;
+            margin-bottom: 8px;
+        }
+        .modal-box p.sub {
+            color: #7A6B62;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .modal-box input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E8E1D3;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+            background: #F9F6F0;
+        }
+        .modal-box input:focus {
+            outline: none;
+            border-color: #D06B4A;
+        }
+        .modal-box .form-group {
+            margin-bottom: 16px;
+        }
+        .modal-box .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #4A3B32;
+            margin-bottom: 6px;
+        }
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 9999px;
+            font-weight: 600;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-size: 1rem;
         }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(to right, #e67e22, #2980b9);
+        .modal-btn-primary {
+            background: #D06B4A;
+            color: #FDFBF7;
         }
-        
-        /* 섹션 공통 스타일 */
-        section {
-            padding: 60px 0;
+        .modal-btn-primary:hover {
+            background: #B55737;
         }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 50px;
-            position: relative;
+        .modal-btn-secondary {
+            background: #E8E1D3;
+            color: #3A2E2A;
         }
-        
-        .section-header h2 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-family: 'Nanum Myeongjo', serif;
-            position: relative;
-            display: inline-block;
+        .modal-btn-secondary:hover {
+            background: #D5CDBB;
         }
-        
-        .section-header h2::after {
-            content: '';
+        .modal-close {
             position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(to right, #2980b9, #e67e22);
-            border-radius: 2px;
-        }
-        
-        .section-header p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            max-width: 700px;
-            margin: 20px auto 0;
-        }
-        
-        /* 예배 안내 섹션 */
-        .worship-schedule {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .worship-item {
-            background: linear-gradient(to bottom, #ffffff, #f5f9ff);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-            border-left: 4px solid #2980b9;
-        }
-        
-        .worship-item:hover {
-            transform: translateY(-5px);
-            border-left: 4px solid #e67e22;
-        }
-        
-        .worship-item h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #a0d2ff;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
             font-size: 1.5rem;
+            color: #7A6B62;
+            cursor: pointer;
         }
-        
-        .worship-time {
-            font-weight: bold;
-            color: #e67e22;
-            margin: 15px 0;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .worship-time::before {
-            content: '⏰';
-            margin-right: 8px;
-            color: #2980b9;
-        }
-        
-        /* 프로그램 섹션 */
-        .programs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-        
-        .program-item {
-            background: linear-gradient(to bottom, #ffffff, #f5f9ff);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-            border-top: 4px solid transparent;
-            background-image: linear-gradient(white, white), 
-                              linear-gradient(to right, #2980b9, #e67e22);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-        }
-        
-        .program-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .program-item h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .program-item h3::before {
-            content: '✓';
-            color: #e67e22;
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .program-item p {
-            color: #555;
-        }
-        
-        /* 갤러리 섹션 */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .gallery-item {
-            height: 200px;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-        
-        .gallery-item:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
-        }
-        
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-        
-        /* 연락처 섹션 */
-        .contact-info {
-            background: linear-gradient(to bottom, #ffffff, #f5f9ff);
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            max-width: 800px;
-            margin: 0 auto;
-            border-top: 4px solid #e67e22;
-        }
-        
-        .contact-item {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        
-        .contact-item:hover {
-            background-color: rgba(41, 128, 185, 0.1);
-        }
-        
-        .contact-item i {
-            width: 40px;
-            color: #e67e22;
-            font-size: 1.5rem;
-            text-align: center;
-        }
-        
-        .contact-detail {
-            font-size: 1.1rem;
-        }
-        
-        /* 지도 */
-        .map {
-            margin-top: 40px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            border: 3px solid transparent;
-            background-image: linear-gradient(white, white), 
-                              linear-gradient(to right, #2980b9, #e67e22);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-        }
-        
-        /* 푸터 */
-        footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
-            color: white;
-            padding: 40px 0 20px;
-            margin-top: 60px;
+        .modal-box {
             position: relative;
         }
-        
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .toggle-link {
+            color: #D06B4A;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 관리자 배지 */
+        .admin-badge {
+            background: #D06B4A;
+            color: #FDFBF7;
+            padding: 2px 12px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-left: 8px;
+        }
+
+        /* 회원 명부 테이블 */
+        .member-table {
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #2980b9, #e67e22, #2980b9);
+            border-collapse: collapse;
+            font-size: 0.9rem;
         }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+        .member-table th {
+            background: #314F40;
+            color: #FDFBF7;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
         }
-        
-        .footer-section h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: #a0d2ff;
+        .member-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #E8E1D3;
         }
-        
-        .footer-section p {
-            margin-bottom: 10px;
+        .member-table tr:hover td {
+            background: #F9F6F0;
         }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* 회원가입 시 약관 동의 */
+        .terms-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #4A3B32;
         }
-        
-        /* 반응형 디자인 */
-        @media (max-width: 992px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .church-info {
-                margin-bottom: 20px;
-            }
-            
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            nav ul li a {
-                padding: 15px 20px;
-            }
+        .terms-check input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #D06B4A;
+            cursor: pointer;
         }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .section-header h2 {
-                font-size: 2rem;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            nav ul li {
-                width: 100%;
-                text-align: center;
-            }
+
+        /* 로그인 상태 표시 */
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            color: #4A3B32;
+        }
+        .user-status .user-name {
+            font-weight: 600;
+            color: #2D2421;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #D06B4A;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #F0EBE1;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <div class="church-info">
-                <div class="church-name">생명의 강 교회</div>
-                <div class="church-slogan">생수의 강이 흘러 넘치는 교회</div>
-                <div class="church-name-en">The River of Life Church</div>
+
+    <!-- 노이즈 텍스처 -->
+    <div class="bg-noise"></div>
+
+    <!-- ==================== 로그인/회원가입 모달 ==================== -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <!-- 로그인 폼 -->
+            <div id="loginForm">
+                <h2>로그인</h2>
+                <p class="sub">생명의 강 교회 가족이신가요?</p>
+                <div class="form-group">
+                    <label>아이디</label>
+                    <input type="text" id="loginId" placeholder="아이디를 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" onkeydown="if(event.key==='Enter') handleLogin()">
+                </div>
+                <button class="modal-btn modal-btn-primary" onclick="handleLogin()">로그인</button>
+                <p style="text-align:center;margin-top:16px;font-size:0.9rem;color:#7A6B62;">
+                    계정이 없으신가요? 
+                    <span class="toggle-link" onclick="toggleAuthForm('signup')">회원가입</span>
+                </p>
+                <p style="text-align:center;margin-top:8px;font-size:0.8rem;color:#B0A89A;">
+                    관리자: KMS / 1234*
+                </p>
             </div>
-            <div class="header-buttons">
-                <a href="#contact" class="btn">방문 안내</a>
+
+            <!-- 회원가입 폼 -->
+            <div id="signupForm" style="display:none;">
+                <h2>회원가입</h2>
+                <p class="sub">생명의 강 교회 가족이 되어주세요</p>
+                <div class="form-group">
+                    <label>이름</label>
+                    <input type="text" id="signupName" placeholder="이름을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label>아이디</label>
+                    <input type="text" id="signupId" placeholder="사용하실 아이디">
+                </div>
+                <div class="form-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="signupPw" placeholder="비밀번호 (6자 이상)">
+                </div>
+                <div class="form-group">
+                    <label>이메일</label>
+                    <input type="email" id="signupEmail" placeholder="이메일 주소">
+                </div>
+                <div class="form-group">
+                    <label>연락처</label>
+                    <input type="text" id="signupPhone" placeholder="010-0000-0000">
+                </div>
+                <div class="form-group terms-check">
+                    <input type="checkbox" id="termsAgree">
+                    <label for="termsAgree">개인정보 수집 및 이용에 동의합니다</label>
+                </div>
+                <button class="modal-btn modal-btn-primary" onclick="handleSignup()">회원가입</button>
+                <p style="text-align:center;margin-top:16px;font-size:0.9rem;color:#7A6B62;">
+                    이미 계정이 있으신가요? 
+                    <span class="toggle-link" onclick="toggleAuthForm('login')">로그인</span>
+                </p>
             </div>
         </div>
-    </header>
-    
-    <nav>
-        <div class="container nav-container">
-            <ul>
-                <li><a href="#" class="active">홈</a></li>
-                <li><a href="#worship">예배 안내</a></li>
-                <li><a href="#programs">사역 프로그램</a></li>
-                <li><a href="https://www.sooplive.co.kr/search?szLocation=main&szSearchType=total&szKeyword=smch1593&szStype=di&szActype=input_field">영상 설교</a></li>
-                <li><a href="#about">교회 소개</a></li>
-                <li><a href="#contact">연락처</a></li>
-            </ul>
+    </div>
+
+    <!-- ==================== 관리자 패널 모달 ==================== -->
+    <div id="adminModal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <button class="modal-close" onclick="closeAdminModal()">&times;</button>
+            <h2>👑 관리자 패널</h2>
+            <p class="sub">회원 명부 관리</p>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                <span style="font-size:0.9rem; color:#4A3B32;">총 <strong id="memberCount">0</strong>명의 회원</span>
+                <button class="btn-secondary" style="padding:10px 24px; font-size:0.9rem;" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel mr-2"></i>엑셀 다운로드
+                </button>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="member-table" id="memberTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>이름</th>
+                            <th>아이디</th>
+                            <th>이메일</th>
+                            <th>연락처</th>
+                            <th>가입일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="memberTableBody">
+                        <!-- 동적 렌더링 -->
+                    </tbody>
+                </table>
+            </div>
+            <p style="text-align:center;margin-top:20px;font-size:0.85rem;color:#B0A89A;">
+                * 엑셀 다운로드 시 모든 회원 정보가 저장됩니다.
+            </p>
+        </div>
+    </div>
+
+    <!-- ==================== 네비게이션 ==================== -->
+    <nav class="max-w-7xl mx-auto px-6 py-6 flex flex-wrap justify-between items-center relative z-10 gap-4">
+        <a href="#" class="font-serif-heading text-3xl tracking-tight text-[#2D2421] flex items-center gap-2">
+            <span class="text-[#D06B4A] text-4xl font-bold">LIFE</span>
+            <span class="text-xl font-bold tracking-wider">생명의 강 교회</span>
+        </a>
+        
+        <div class="hidden md:flex gap-8 items-center text-sm font-medium text-[#4A3B32]">
+            <a href="#home" class="hover:text-[#D06B4A] transition-colors duration-300">홈</a>
+            <a href="#worship" class="hover:text-[#D06B4A] transition-colors duration-300">예배 안내</a>
+            <a href="#programs" class="hover:text-[#D06B4A] transition-colors duration-300">사역</a>
+            <a href="#about" class="hover:text-[#D06B4A] transition-colors duration-300">교회 소개</a>
+            <a href="#contact" class="hover:text-[#D06B4A] transition-colors duration-300">연락처</a>
+            <a href="https://www.sooplive.co.kr/search?szLocation=main&szSearchType=total&szKeyword=smch1593&szStype=di&szActype=input_field" target="_blank" class="hover:text-[#D06B4A] transition-colors duration-300">영상 설교</a>
+        </div>
+
+        <div class="flex items-center gap-3 flex-wrap">
+            <!-- 로그인 상태 표시 -->
+            <div id="userStatus" style="display:none;" class="user-status">
+                <span class="user-name" id="displayUserName">관리자</span>
+                <span id="adminBadge" style="display:none;" class="admin-badge">ADMIN</span>
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+
+            <!-- 로그인/회원가입 버튼 (비로그인 시) -->
+            <div id="authButtons">
+                <button onclick="openModal('login')" class="text-[#4A3B32] hover:text-[#D06B4A] transition-colors duration-300 text-sm font-medium px-4 py-2">
+                    <i class="fas fa-sign-in-alt mr-1"></i>로그인
+                </button>
+                <button onclick="openModal('signup')" class="bg-[#D06B4A] text-[#FDFBF7] px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#B55737] transition-all duration-300 shadow-sm">
+                    <i class="fas fa-user-plus mr-1"></i>회원가입
+                </button>
+            </div>
+
+            <a href="#give" class="bg-[#314F40] text-[#FDFBF7] px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#233A2D] transition-all duration-300 shadow-sm ml-1">
+                <i class="fas fa-hand-holding-heart mr-1"></i>헌금
+            </a>
         </div>
     </nav>
-    
-    <div class="hero">
-        <div class="container">
-            <h1>은혜와 진리로 세워지는 교회</h1>
-            <p>생명의 강 교회에 오신 것을 환영합니다. 우리는 예수 그리스도의 사랑을 전하며          믿음으로 함께 걸어가는 언약 공동체입니다.</p>
-            <a href="#worship" class="btn">예배 시간 보기</a>
+
+    <!-- ==================== 히어로 섹션 ==================== -->
+    <section id="home" class="max-w-7xl mx-auto px-6 pt-8 pb-24 lg:pt-16 lg:pb-32 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10">
+        <div class="lg:col-span-6 flex flex-col items-start text-left order-2 lg:order-1">
+            <span class="text-[#D06B4A] text-sm font-medium uppercase tracking-widest mb-4 flex items-center gap-2">
+                <iconify-icon icon="solar:sun-fog-linear" stroke-width="1.5"></iconify-icon>
+                생명의 강 교회
+            </span>
+            <h1 class="font-serif-heading text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#2D2421] leading-[1.15] mb-6">
+                생수의 강이<br>
+                <span class="text-[#D06B4A] italic font-normal block mt-2">흘러 넘치는 교회</span>
+            </h1>
+            <p class="text-lg md:text-xl text-[#4A3B32] mb-10 max-w-lg leading-relaxed">
+                은혜와 진리로 세워지는 언약 공동체. 예수 그리스도의 사랑을 전하며 믿음으로 함께 걸어가는 가족입니다.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+                <a href="#worship" class="w-full sm:w-auto btn-primary text-center">
+                    <i class="fas fa-church mr-2"></i>예배 시간 보기
+                </a>
+                <a href="https://www.sooplive.co.kr/search?szLocation=main&szSearchType=total&szKeyword=smch1593&szStype=di&szActype=input_field" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-[#3A2E2A] text-base font-medium hover:text-[#D06B4A] transition-colors duration-300 group">
+                    <iconify-icon icon="solar:play-circle-linear" stroke-width="1.5" class="text-2xl group-hover:scale-110 transition-transform"></iconify-icon>
+                    최신 설교 보기
+                </a>
+            </div>
+        </div>
+        <div class="lg:col-span-6 relative order-1 lg:order-2">
+            <div class="absolute inset-0 bg-[#E8E1D3] rounded-[2rem] transform rotate-3 scale-[0.98] translate-x-2 translate-y-4 -z-10"></div>
+            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070&auto=format&fit=crop" 
+                 alt="따뜻한 교회 공동체" 
+                 class="w-full h-[380px] lg:h-[520px] object-cover rounded-[2rem] shadow-sm brightness-95 contrast-125 saturate-50">
+        </div>
+    </section>
+
+    <!-- ==================== 예배 시간 안내 (상단 배너) ==================== -->
+    <div class="bg-[#F0EBE1] border-y border-[#E8E1D3] relative z-10">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-[#3A2E2A]">
+            <div class="flex items-center gap-3">
+                <iconify-icon icon="solar:calendar-minimalistic-linear" stroke-width="1.5" class="text-2xl text-[#D06B4A]"></iconify-icon>
+                <span class="text-lg font-serif-heading font-bold tracking-tight">주일 예배 · 오전 11시 &amp; 오후 2시</span>
+            </div>
+            <span class="hidden sm:block text-[#C8C0B1]">|</span>
+            <div class="flex items-center gap-2 text-sm text-[#4A3B32]">
+                <iconify-icon icon="solar:tv-linear" stroke-width="1.5" class="text-lg text-[#314F40]"></iconify-icon>
+                <span>온라인으로도 함께 예배드려요</span>
+            </div>
         </div>
     </div>
-    
-    <div class="container">
-        <section id="worship">
-            <div class="section-header">
-                <h2>예배 안내</h2>
-                <p>생명의 강 교회에서 함께 드리는 예배 시간입니다</p>
+
+    <!-- ==================== 예배 안내 섹션 ==================== -->
+    <section id="worship" class="py-24 lg:py-32 bg-[#F9F6F0] relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-serif-heading text-4xl md:text-5xl font-bold tracking-tight text-[#2D2421] mb-4">
+                    예배 안내
+                </h2>
+                <div class="section-underline"></div>
+                <p class="text-base text-[#4A3B32] mt-6">생명의 강 교회에서 함께 드리는 예배 시간입니다</p>
             </div>
-            
-            <div class="worship-schedule">
-                <div class="worship-item">
-                    <h3>주일 예배</h3>
-                    <p>주일오전예배</p>
-                    <div class="worship-time">오전 11시</div>
-                    <p>주일오후예배</p>
-                    <div class="worship-time">오후 2시</div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-[#FDFBF7] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#D06B4A]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:sun-2-linear" stroke-width="1.5" class="text-3xl text-[#D06B4A]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">주일 예배</h3>
+                    <div class="space-y-3 text-sm text-[#4A3B32]">
+                        <p><span class="font-bold text-[#D06B4A]">주일오전예배</span><br>오전 11시</p>
+                        <p><span class="font-bold text-[#D06B4A]">주일오후예배</span><br>오후 2시</p>
+                    </div>
                 </div>
-                
-                <div class="worship-item">
-                    <h3>주중 예배</h3>
-                    <p>아침예배 (월~금)</p>
-                    <div class="worship-time">오전 8시 30분</div>
-                    <p>수요저녁예배</p>
-                    <div class="worship-time">오후 7시 30분</div>
-                    <p>금요철야예배</p>
-                    <div class="worship-time">오후 9시</div>
+
+                <div class="bg-[#FDFBF7] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#314F40]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:calendar-linear" stroke-width="1.5" class="text-3xl text-[#314F40]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">주중 예배</h3>
+                    <div class="space-y-2 text-sm text-[#4A3B32]">
+                        <p><span class="font-bold text-[#314F40]">아침예배 (월~금)</span><br>오전 8시 30분</p>
+                        <p><span class="font-bold text-[#314F40]">수요저녁예배</span><br>오후 7시 30분</p>
+                        <p><span class="font-bold text-[#314F40]">금요철야예배</span><br>오후 9시</p>
+                    </div>
                 </div>
-                
-                <div class="worship-item">
-                    <h3>특별 예배</h3>
-                    <p>매월 네 번째 주일저녁찬양예배</p>
-                    <div class="worship-time">오후 7시 30분</div>
-                    <p>침노하는 자들의 모임(중보기도회)</p>
-                    <div class="worship-time">목요일 오전 11시</div>
+
+                <div class="bg-[#FDFBF7] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#D1A741]/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:star-linear" stroke-width="1.5" class="text-3xl text-[#A6802B]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">특별 예배</h3>
+                    <div class="space-y-2 text-sm text-[#4A3B32]">
+                        <p><span class="font-bold text-[#A6802B]">주일저녁찬양예배</span><br>매월 넷째 주일 오후 7시 30분</p>
+                        <p><span class="font-bold text-[#A6802B]">중보기도회</span><br>목요일 오전 11시</p>
+                    </div>
                 </div>
-                
-                <div class="worship-item">
-                    <h3>주일학교 예배</h3>
-                    <p>유치부 · 유초등부</p>
-                    <div class="worship-time">오전 9시 30분</div>
-                    <p>중고등부 · 청년부</p>
-                    <div class="worship-time">오후 1시 20분</div>
-                </div>
-            </div>
-        </section>
-        
-        <section id="programs">
-            <div class="section-header">
-                <h2>사역 프로그램</h2>
-                <p>생명의 강 교회에서 진행하는 다양한 사역 프로그램</p>
-            </div>
-            
-            <div class="programs">
-                <div class="program-item">
-                    <h3>성경 공부</h3>
-                    <p>"주 예수 그리스도의 언약과 생명, 교회"를 주제로 한 깊이 있는 성경 공부 프로그램입니다. 말씀 안에서 참된 생명의 길을 발견하는 시간입니다.</p>
-                </div>
-                
-                <div class="program-item">
-                    <h3>중보기도회</h3>
-                    <p>침노하는 자들의 모임으로 불리는 중보기도회는 교회와 성도들을 위한 간절한 기도로 하나님의 은혜와 능력을 체험하는 소중한 시간입니다. 다른 교회 지체도 함께합니다.</p>
-                </div>
-                
-                <div class="program-item">
-                    <h3>목회자 양성</h3>
-                    <p>다음 세기를 이끌어갈 목회자를 양성하는 프로그램으로, 신학적 기초와 실천적 사역을 겸비한 미래 지도자들을 준비시키고 있습니다.</p>
-                </div>
-                
-                <div class="program-item">
-                    <h3>차세대 말씀 양육</h3>
-                    <p>어린이와 청소년들을 위한 체계적인 신앙 교육 프로그램으로, 말씀 안에서 자라나는 건강한 다음 세대를 세워갑니다.</p>
-                </div>
-                
-                <div class="program-item">
-                    <h3>선교와 봉사</h3>
-                    <p>지역사회와 세계를 향한 선교와 봉사 활동으로 하나님의 사랑을 실천하며, 예수 그리스도의 복음을 전파합니다.</p>
-                </div>
-                
-                <div class="program-item">
-                    <h3>가정 사역</h3>
-                    <p>가정의 거룩함과 화목을 도모하는 다양한 프로그램으로, 그리스도 안에 있는 가정을 세워가도록 돕습니다.</p>
+
+                <div class="bg-[#FDFBF7] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#8B6B4A]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:users-group-two-rounded-linear" stroke-width="1.5" class="text-3xl text-[#8B6B4A]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">주일학교</h3>
+                    <div class="space-y-2 text-sm text-[#4A3B32]">
+                        <p><span class="font-bold text-[#8B6B4A]">유치부 · 유초등부</span><br>오전 9시 30분</p>
+                        <p><span class="font-bold text-[#8B6B4A]">중고등부 · 청년부</span><br>오후 1시 20분</p>
+                    </div>
                 </div>
             </div>
-        </section>
-        
-        <section id="gallery">
-            <div class="section-header">
-                <h2>생명의 강 교회로 초대합니다</h2>
-                <p> 주예수님과 연합하여 성령으로 하나된 공동체</p>
+        </div>
+    </section>
+
+    <!-- ==================== 사역 프로그램 섹션 ==================== -->
+    <section id="programs" class="py-24 lg:py-32 bg-[#FDFBF7] relative z-10 border-t border-[#E8E1D3]/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-serif-heading text-4xl md:text-5xl font-bold tracking-tight text-[#2D2421] mb-4">
+                    사역 프로그램
+                </h2>
+                <div class="section-underline"></div>
+                <p class="text-base text-[#4A3B32] mt-6">생명의 강 교회에서 진행하는 다양한 사역 프로그램</p>
             </div>
-            
-            <div class="gallery">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1464207687429-7505649dae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="교회 예배">
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-[#F9F6F0] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#D06B4A]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:book-2-linear" stroke-width="1.5" class="text-3xl text-[#D06B4A]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">성경 공부</h3>
+                    <p class="text-sm text-[#4A3B32] leading-relaxed">"주 예수 그리스도의 언약과 생명, 교회"를 주제로 한 깊이 있는 성경 공부. 말씀 안에서 참된 생명의 길을 발견합니다.</p>
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="성경 공부">
+
+                <div class="bg-[#F9F6F0] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#314F40]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:hand-heart-linear" stroke-width="1.5" class="text-3xl text-[#314F40]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">중보기도회</h3>
+                    <p class="text-sm text-[#4A3B32] leading-relaxed">침노하는 자들의 모임. 교회와 성도들을 위한 간절한 기도로 하나님의 은혜를 체험하는 소중한 시간입니다.</p>
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1527525443983-6e60c75fff46?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="친교 시간">
+
+                <div class="bg-[#F9F6F0] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#D1A741]/20 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:users-group-two-rounded-linear" stroke-width="1.5" class="text-3xl text-[#A6802B]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">목회자 양성</h3>
+                    <p class="text-sm text-[#4A3B32] leading-relaxed">다음 세기를 이끌어갈 목회자를 양성합니다. 신학적 기초와 실천적 사역을 겸비한 미래 지도자를 준비시킵니다.</p>
                 </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="기도회">
+
+                <div class="bg-[#F9F6F0] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#8B6B4A]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:bookmark-linear" stroke-width="1.5" class="text-3xl text-[#8B6B4A]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">차세대 말씀 양육</h3>
+                    <p class="text-sm text-[#4A3B32] leading-relaxed">어린이와 청소년을 위한 체계적인 신앙 교육. 말씀 안에서 자라나는 건강한 다음 세대를 세워갑니다.</p>
                 </div>
-            </div>
-        </section>
-        
-        <section id="about">
-            <div class="section-header">
-                <h2>교회 소개</h2>
-                <p>생명의 강 교회는</p>
-            </div>
-            
-            <div class="program-item">
-                <h3>우리의 신앙</h3>
-                <p>교회는 주예수 그리스도의 몸입니다(엡1:23). 우리는 하나님과 새 언약을 맺은 백성으로 주예수께서 우리의 머리이심을 고백합니다. 성경이 하나님의 영감으로 주어진(inspired) 말씀이며, 믿음과 생활에 있어 최종적인 권위임을 믿습니다.</p>
-                <p>우리는 아버지와 아들, 성령이 한 하나님이심을 믿습니다(사9:6,7, 마28:19,20, 요14:10). 우리의 구원은 성령의 인도하심을 따라 머리이신 주예수 그리스도와 연합하여 그와 함께 죽고 함께 부활한 한 몸으로 얻게 되었을 선포합니다(댐후2:11, 갈2:20).</p>
-                
-                <h3>교회 비전</h3>
-                <p>생명의 강 교회는 말씀과 기도로 무장된 제자를 세우고, 생명의 복음을 전파하며, 사랑과 섬김으로 지역사회와 세계에 영향을 미치는 공동체가 되는 것을 비전으로 합니다.</p>
-            </div>
-        </section>
-        
-        <section id="contact">
-            <div class="section-header">
-                <h2>연락처</h2>
-                <p>생명의 강 교회로 오시는 길</p>
-            </div>
-            
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <div class="contact-detail">02-2601-1591</div>
+
+                <div class="bg-[#F9F6F0] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#D06B4A]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:planet-linear" stroke-width="1.5" class="text-3xl text-[#D06B4A]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">선교와 봉사</h3>
+                    <p class="text-sm text-[#4A3B32] leading-relaxed">지역사회와 세계를 향한 선교와 봉사로 하나님의 사랑을 실천하며 복음을 전파합니다.</p>
                 </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <div class="contact-detail">rolchurch@gmail.com</div>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <div class="contact-detail">서울시 양천구 신월동 20-22, 생명의 강 교회 (The River of Life Church)</div>
-                </div>
-            </div>
-            
-            <div class="map">
-                <img src="https://via.placeholder.com/1200x500?text=Church+Location+Map" alt="교회 위치 지도" style="width: 100%;">
-            </div>
-        </section>
-    </div>
-    
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>생명의 강 교회</h3>
-                    <p>생수의 강이 흘러 넘치는 교회</p>
-                    <p>The River of Life Church</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>예배 시간</h3>
-                    <p>주일 오전: 11:00</p>
-                    <p>주일 오후: 14:00</p>
-                    <p>수요 저녁: 19:30</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>연락처</h3>
-                    <p>Tel: 02-2601-1591</p>
-                    <p>Email: rolchurch@gmail.com</p>
-                    <p>서울시 양천구 신월동 20-22</p>
+
+                <div class="bg-[#F9F6F0] p-8 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)] card-hover">
+                    <div class="w-14 h-14 rounded-2xl bg-[#314F40]/10 flex items-center justify-center mb-5">
+                        <iconify-icon icon="solar:home-smile-linear" stroke-width="1.5" class="text-3xl text-[#314F40]"></iconify-icon>
+                    </div>
+                    <h3 class="font-serif-heading text-xl font-bold text-[#2D2421] mb-3">가정 사역</h3>
+                    <p class="text-sm text-[#4A3B32] leading-relaxed">가정의 거룩함과 화목을 도모하는 프로그램으로, 그리스도 안에 있는 가정을 세워가도록 돕습니다.</p>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>생명의 강 교회 © 2025. All Rights Reserved.</p>
+        </div>
+    </section>
+
+    <!-- ==================== 교회 소개 섹션 ==================== -->
+    <section id="about" class="py-24 lg:py-32 bg-[#F9F6F0] relative z-10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div class="relative">
+                <div class="aspect-[4/5] w-full max-w-md mx-auto relative rounded-[2.5rem] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=1974&auto=format&fit=crop" 
+                         alt="목회자" 
+                         class="w-full h-full object-cover saturate-[0.85] sepia-[0.1]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#2D2421]/60 to-transparent mix-blend-multiply"></div>
+                </div>
+                <div class="absolute -bottom-6 -left-6 bg-[#314F40] text-[#FDFBF7] p-6 rounded-3xl rounded-tr-none shadow-sm hidden md:block">
+                    <iconify-icon icon="solar:leaf-linear" stroke-width="1.5" class="text-3xl mb-2 text-[#D1A741]"></iconify-icon>
+                    <p class="text-xs font-medium uppercase tracking-widest opacity-90">생수의 강</p>
+                </div>
+            </div>
+            <div>
+                <h2 class="font-serif-heading text-4xl md:text-5xl font-bold tracking-tight text-[#2D2421] mb-6 leading-tight">
+                    은혜와 진리로<br>
+                    <span class="text-[#D06B4A]">세워지는 교회</span>
+                </h2>
+                <div class="space-y-5 text-base text-[#4A3B32] leading-relaxed mb-8">
+                    <p>교회는 주 예수 그리스도의 몸입니다(엡 1:23). 우리는 하나님과 새 언약을 맺은 백성으로 주 예수께서 우리의 머리이심을 고백합니다.</p>
+                    <p>성경이 하나님의 영감으로 주어진 말씀이며, 믿음과 생활에 있어 최종적인 권위임을 믿습니다. 아버지와 아들, 성령이 한 하나님이심을 믿습니다(사 9:6-7, 마 28:19-20, 요 14:10).</p>
+                    <p class="italic text-[#3A2E2A] font-serif-heading text-lg">"우리의 구원은 성령의 인도하심을 따라 머리이신 주 예수 그리스도와 연합하여 그와 함께 죽고 함께 부활한 한 몸으로 얻게 되었음을 선포합니다."</p>
+                </div>
+                <a href="#contact" class="inline-flex items-center gap-2 text-[#D06B4A] font-medium text-base hover:text-[#B55737] transition-colors duration-300 group">
+                    <i class="fas fa-chevron-right group-hover:translate-x-1 transition-transform"></i>
+                    더 알아보기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 갤러리 섹션 ==================== -->
+    <section id="gallery" class="py-24 lg:py-32 bg-[#FDFBF7] relative z-10 border-t border-[#E8E1D3]/50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-serif-heading text-4xl md:text-5xl font-bold tracking-tight text-[#2D2421] mb-4">
+                    생명의 강 교회로 초대합니다
+                </h2>
+                <div class="section-underline"></div>
+                <p class="text-base text-[#4A3B32] mt-6">주 예수님과 연합하여 성령으로 하나된 공동체</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="rounded-2xl overflow-hidden shadow-sm card-hover">
+                    <img src="https://images.unsplash.com/photo-1464207687429-7505649dae38?q=80&w=600&auto=format&fit=crop" 
+                         alt="교회 예배" 
+                         class="w-full h-56 object-cover img-zoom">
+                </div>
+                <div class="rounded-2xl overflow-hidden shadow-sm card-hover">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop" 
+                         alt="성경 공부" 
+                         class="w-full h-56 object-cover img-zoom">
+                </div>
+                <div class="rounded-2xl overflow-hidden shadow-sm card-hover">
+                    <img src="https://images.unsplash.com/photo-1527525443983-6e60c75fff46?q=80&w=600&auto=format&fit=crop" 
+                         alt="친교 시간" 
+                         class="w-full h-56 object-cover img-zoom">
+                </div>
+                <div class="rounded-2xl overflow-hidden shadow-sm card-hover">
+                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=600&auto=format&fit=crop" 
+                         alt="기도회" 
+                         class="w-full h-56 object-cover img-zoom">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 이메일 캡처 섹션 ==================== -->
+    <section class="py-24 bg-[#314F40] relative z-10 overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-[#233A2D] rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+        <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+            <h2 class="font-serif-heading text-3xl md:text-4xl font-bold tracking-tight text-[#FDFBF7] mb-4">
+                교회 소식을 받아보세요
+            </h2>
+            <p class="text-base text-[#EAECE7] mb-10 leading-relaxed max-w-xl mx-auto opacity-90">
+                매주 설교 말씀과 기도 제목, 교회 소식을 이메일로 보내드립니다.
+            </p>
+            <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+                <input type="email" placeholder="이메일 주소를 입력하세요" 
+                       class="flex-1 bg-[#FDFBF7]/10 border border-[#FDFBF7]/20 rounded-full px-6 py-3.5 text-[#FDFBF7] placeholder:text-[#EAECE7]/60 focus:outline-none focus:ring-2 focus:ring-[#D1A741]/50 focus:border-transparent text-sm">
+                <button type="submit" class="bg-[#D1A741] text-[#2D2421] px-8 py-3.5 rounded-full text-sm font-medium hover:bg-[#C29A3A] transition-colors duration-300 shadow-sm whitespace-nowrap">
+                    <i class="fas fa-paper-plane mr-2"></i>구독하기
+                </button>
+            </form>
+            <p class="text-xs text-[#EAECE7]/50 mt-4">소중한 개인정보는 안전하게 보호됩니다.</p>
+        </div>
+    </section>
+
+    <!-- ==================== 헌금 섹션 ==================== -->
+    <section id="give" class="py-24 lg:py-32 bg-[#4A3B32] relative z-10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <iconify-icon icon="solar:hand-heart-linear" stroke-width="1.5" class="text-5xl text-[#D06B4A] mb-6"></iconify-icon>
+            <h2 class="font-serif-heading text-4xl md:text-5xl font-bold tracking-tight text-[#FDFBF7] mb-6">
+                주님의 일에 동참하세요
+            </h2>
+            <p class="text-base md:text-lg text-[#E8E1D3] mb-10 leading-relaxed max-w-2xl mx-auto opacity-90">
+                여러분의 정성어린 헌금은 교회 사역과 선교, 지역사회 나눔에 소중히 사용됩니다. 
+                모든 헌금은 안전하게 보호됩니다.
+            </p>
+            <a href="#" class="inline-block bg-[#D06B4A] text-[#FDFBF7] px-10 py-4 rounded-full text-base font-medium hover:bg-[#B55737] transition-all duration-300 shadow-sm mb-4">
+                <i class="fas fa-hand-holding-heart mr-2"></i>헌금하기
+            </a>
+            <div class="flex items-center justify-center gap-2 text-xs text-[#E8E1D3]/60">
+                <iconify-icon icon="solar:lock-password-linear" stroke-width="1.5"></iconify-icon>
+                <span>모든 헌금은 암호화되어 안전하게 전송됩니다.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 연락처 섹션 ==================== -->
+    <section id="contact" class="py-24 bg-[#F9F6F0] relative z-10">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-serif-heading text-4xl md:text-5xl font-bold tracking-tight text-[#2D2421] mb-4">
+                    연락처
+                </h2>
+                <div class="section-underline"></div>
+                <p class="text-base text-[#4A3B32] mt-6">생명의 강 교회로 오시는 길</p>
+            </div>
+
+            <div class="bg-[#FDFBF7] p-10 rounded-[2rem] border border-[#E8E1D3]/80 shadow-[0_4px_20px_-10px_rgba(45,36,33,0.05)]">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-[#D06B4A]/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone text-[#D06B4A] text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[#4A3B32]">전화</p>
+                            <p class="text-base font-bold text-[#2D2421]">02-2601-1591</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-[#314F40]/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-[#314F40] text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[#4A3B32]">이메일</p>
+                            <p class="text-base font-bold text-[#2D2421]">rolchurch@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-[#D1A741]/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-marker-alt text-[#A6802B] text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[#4A3B32]">주소</p>
+                            <p class="text-base font-bold text-[#2D2421]">서울시 양천구 신월동 20-22</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 rounded-[2rem] overflow-hidden shadow-sm border-4 border-[#FDFBF7]">
+                <img src="https://via.placeholder.com/1200x400?text=생명의+강+교회+위치" 
+                     alt="교회 위치 지도" 
+                     class="w-full h-64 object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 풋터 ==================== -->
+    <footer class="bg-[#2D2421] pt-20 pb-10 relative z-10 border-t border-[#1A1412]">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-16">
+                <div class="md:col-span-1">
+                    <a href="#" class="font-serif-heading text-3xl tracking-tight text-[#FDFBF7] flex items-center gap-2 mb-4">
+                        <span class="text-[#D1A741] text-4xl font-bold">LIFE</span>
+                        <span class="text-xl font-bold">생명의 강</span>
+                    </a>
+                    <p class="text-sm text-[#C8C0B1] mb-6 max-w-sm leading-relaxed">
+                        생수의 강이 흘러 넘치는 교회<br>
+                        The River of Life Church
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-[#4A3B32] flex items-center justify-center text-[#FDFBF7] hover:bg-[#D06B4A] transition-colors duration-300">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-[#4A3B32] flex items-center justify-center text-[#FDFBF7] hover:bg-[#D06B4A] transition-colors duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-[#4A3B32] flex items-center justify-center text-[#FDFBF7] hover:bg-[#D06B4A] transition-colors duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-serif-heading text-lg font-bold text-[#FDFBF7] mb-5 tracking-tight">바로가기</h4>
+                    <ul class="space-y-3 text-sm text-[#C8C0B1]">
+                        <li><a href="#home" class="hover:text-[#D1A741] transition-colors">홈</a></li>
+                        <li><a href="#worship" class="hover:text-[#D1A741] transition-colors">예배 안내</a></li>
+                        <li><a href="#programs" class="hover:text-[#D1A741] transition-colors">사역 프로그램</a></li>
+                        <li><a href="#about" class="hover:text-[#D1A741] transition-colors">교회 소개</a></li>
+                        <li><a href="#contact" class="hover:text-[#D1A741] transition-colors">연락처</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-serif-heading text-lg font-bold text-[#FDFBF7] mb-5 tracking-tight">예배 시간</h4>
+                    <ul class="space-y-3 text-sm text-[#C8C0B1]">
+                        <li>주일오전예배 · 오전 11시</li>
+                        <li>주일오후예배 · 오후 2시</li>
+                        <li>수요저녁예배 · 오후 7시 30분</li>
+                        <li>금요철야예배 · 오후 9시</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-serif-heading text-lg font-bold text-[#FDFBF7] mb-5 tracking-tight">후원</h4>
+                    <ul class="space-y-3 text-sm text-[#C8C0B1]">
+                        <li><a href="#give" class="hover:text-[#D1A741] transition-colors">헌금하기</a></li>
+                        <li><a href="#" class="hover:text-[#D1A741] transition-colors">기도제목 올리기</a></li>
+                        <li><a href="#" class="hover:text-[#D1A741] transition-colors">봉사 신청</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-[#4A3B32]/50 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#C8C0B1]/60">
+                <p>© 2025 생명의 강 교회. All Rights Reserved.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-[#FDFBF7] transition-colors">개인정보처리방침</a>
+                    <a href="#" class="hover:text-[#FDFBF7] transition-colors">이용약관</a>
+                </div>
             </div>
         </div>
     </footer>
+
+    <!-- ==================== JavaScript ==================== -->
+    <script>
+        // ===== 회원 데이터 =====
+        let members = [];
+        let currentUser = null;
+        let nextId = 1;
+
+        // 관리자 계정 (고정)
+        const ADMIN = { id: 'KMS', password: '1234*', name: '관리자', email: 'admin@church.com', phone: '02-2601-1591', isAdmin: true };
+
+        // ===== 모달 제어 =====
+        function openModal(type) {
+            document.getElementById('authModal').classList.add('active');
+            if (type === 'login') {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('signupForm').style.display = 'none';
+                document.getElementById('loginId').value = '';
+                document.getElementById('loginPw').value = '';
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('signupForm').style.display = 'block';
+                document.getElementById('signupName').value = '';
+                document.getElementById('signupId').value = '';
+                document.getElementById('signupPw').value = '';
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPhone').value = '';
+                document.getElementById('termsAgree').checked = false;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function toggleAuthForm(type) {
+            if (type === 'login') {
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('signupForm').style.display = 'none';
+            } else {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('signupForm').style.display = 'block';
+            }
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('authModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ===== 회원가입 =====
+        function handleSignup() {
+            const name = document.getElementById('signupName').value.trim();
+            const id = document.getElementById('signupId').value.trim();
+            const pw = document.getElementById('signupPw').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const phone = document.getElementById('signupPhone').value.trim();
+            const agreed = document.getElementById('termsAgree').checked;
+
+            if (!name || !id || !pw || !email || !phone) {
+                alert('모든 필드를 입력해주세요.');
+                return;
+            }
+            if (pw.length < 6) {
+                alert('비밀번호는 6자 이상으로 설정해주세요.');
+                return;
+            }
+            if (!agreed) {
+                alert('개인정보 수집 및 이용에 동의해주세요.');
+                return;
+            }
+            if (members.find(m => m.id === id)) {
+                alert('이미 사용 중인 아이디입니다.');
+                return;
+            }
+
+            members.push({
+                id: nextId++,
+                userId: id,
+                password: pw,
+                name: name,
+                email: email,
+                phone: phone,
+                joinedAt: new Date().toLocaleString('ko-KR'),
+                isAdmin: false
+            });
+
+            alert('🎉 회원가입이 완료되었습니다! 로그인해주세요.');
+            toggleAuthForm('login');
+            document.getElementById('signupName').value = '';
+            document.getElementById('signupId').value = '';
+            document.getElementById('signupPw').value = '';
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPhone').value = '';
+            document.getElementById('termsAgree').checked = false;
+        }
+
+        // ===== 로그인 =====
+        function handleLogin() {
+            const id = document.getElementById('loginId').value.trim();
+            const pw = document.getElementById('loginPw').value.trim();
+
+            if (!id || !pw) {
+                alert('아이디와 비밀번호를 입력해주세요.');
+                return;
+            }
+
+            // 관리자 체크
+            if (id === ADMIN.id && pw === ADMIN.password) {
+                currentUser = { ...ADMIN, isAdmin: true };
+                updateUI();
+                closeModal();
+                alert('👑 관리자로 로그인되었습니다.');
+                return;
+            }
+
+            // 일반 회원 체크
+            const member = members.find(m => m.userId === id && m.password === pw);
+            if (member) {
+                currentUser = { ...member, isAdmin: false };
+                updateUI();
+                closeModal();
+                alert(`🙏 ${member.name}님, 환영합니다!`);
+                return;
+            }
+
+            alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+        }
+
+        // ===== 로그아웃 =====
+        function handleLogout() {
+            currentUser = null;
+            updateUI();
+            alert('로그아웃되었습니다.');
+        }
+
+        // ===== UI 업데이트 =====
+        function updateUI() {
+            const authButtons = document.getElementById('authButtons');
+            const userStatus = document.getElementById('userStatus');
+            const displayName = document.getElementById('displayUserName');
+            const adminBadge = document.getElementById('adminBadge');
+
+            if (currentUser) {
+                authButtons.style.display = 'none';
+                userStatus.style.display = 'flex';
+                displayName.textContent = currentUser.name || currentUser.userId || '사용자';
+                adminBadge.style.display = currentUser.isAdmin ? 'inline' : 'none';
+                
+                // 관리자일 경우 관리자 패널 열기 버튼 표시
+                if (currentUser.isAdmin) {
+                    // 이미 표시되어 있으면 통과
+                }
+            } else {
+                authButtons.style.display = 'flex';
+                userStatus.style.display = 'none';
+            }
+        }
+
+        // ===== 관리자 패널 =====
+        function openAdminPanel() {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('관리자 권한이 필요합니다.');
+                return;
+            }
+            renderMemberTable();
+            document.getElementById('adminModal').classList.add('active');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('active');
+        }
+
+        document.getElementById('adminModal').addEventListener('click', function(e) {
+            if (e.target === this) closeAdminModal();
+        });
+
+        function renderMemberTable() {
+            const tbody = document.getElementById('memberTableBody');
+            const count = document.getElementById('memberCount');
+            
+            if (members.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#B0A89A;">등록된 회원이 없습니다.</td></tr>`;
+                count.textContent = '0';
+                return;
+            }
+
+            count.textContent = members.length;
+            tbody.innerHTML = members.map((m, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><strong>${m.name}</strong></td>
+                    <td>${m.userId}</td>
+                    <td>${m.email}</td>
+                    <td>${m.phone}</td>
+                    <td style="font-size:0.8rem;color:#7A6B62;">${m.joinedAt}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ===== 엑셀 다운로드 =====
+        function exportToExcel() {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('관리자 권한이 필요합니다.');
+                return;
+            }
+
+            if (members.length === 0) {
+                alert('내보낼 회원 데이터가 없습니다.');
+                return;
+            }
+
+            const data = members.map((m, idx) => ({
+                '번호': idx + 1,
+                '이름': m.name,
+                '아이디': m.userId,
+                '이메일': m.email,
+                '연락처': m.phone,
+                '가입일': m.joinedAt
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            
+            // 컬럼 너비 설정
+            ws['!cols'] = [
+                { wch: 6 },
+                { wch: 12 },
+                { wch: 15 },
+                { wch: 25 },
+                { wch: 18 },
+                { wch: 22 }
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '회원명부');
+            XLSX.writeFile(wb, `생명의강교회_회원명부_${new Date().toISOString().slice(0,10)}.xlsx`);
+            
+            alert('✅ 회원 명부가 엑셀 파일로 다운로드되었습니다.');
+        }
+
+        // ===== 관리자 접근: 로고 더블클릭 시 관리자 패널 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // 로고 더블클릭 시 관리자 패널 오픈
+            const logo = document.querySelector('nav a');
+            if (logo) {
+                logo.addEventListener('dblclick', function(e) {
+                    e.preventDefault();
+                    if (currentUser && currentUser.isAdmin) {
+                        openAdminPanel();
+                    } else if (currentUser) {
+                        alert('관리자 권한이 없습니다. 관리자 계정(KMS)으로 로그인해주세요.');
+                    } else {
+                        alert('관리자로 로그인 후 이용 가능합니다.\n관리자 ID: KMS / PW: 1234*');
+                    }
+                });
+            }
+
+            // 초기 UI 설정
+            updateUI();
+
+            // 샘플 회원 데이터 추가 (테스트용)
+            if (members.length === 0) {
+                members.push({
+                    id: nextId++,
+                    userId: 'hong',
+                    password: '123456',
+                    name: '홍길동',
+                    email: 'hong@email.com',
+                    phone: '010-1234-5678',
+                    joinedAt: new Date().toLocaleString('ko-KR'),
+                    isAdmin: false
+                });
+                members.push({
+                    id: nextId++,
+                    userId: 'kim',
+                    password: '123456',
+                    name: '김성은',
+                    email: 'kim@email.com',
+                    phone: '010-2345-6789',
+                    joinedAt: new Date().toLocaleString('ko-KR'),
+                    isAdmin: false
+                });
+            }
+        });
+
+        // ===== 키보드 단축키: Ctrl+Shift+A = 관리자 패널 =====
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                if (currentUser && currentUser.isAdmin) {
+                    openAdminPanel();
+                } else {
+                    alert('관리자로 로그인 후 이용 가능합니다.\n관리자 ID: KMS / PW: 1234*');
+                }
+            }
+        });
+
+        console.log('🙏 생명의 강 교회 홈페이지에 오신 것을 환영합니다!');
+        console.log('👑 관리자: ID: KMS, PW: 1234*');
+        console.log('📋 단축키: Ctrl+Shift+A = 관리자 패널');
+    </script>
+
 </body>
 </html>
