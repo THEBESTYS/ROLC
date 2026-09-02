@@ -1011,452 +1011,502 @@
 
     <!-- ==================== JavaScript ==================== -->
     <script>
-        // ===== 데이터 =====
-        let members = [];
-        let notices = [];
-        let currentUser = null;
-        let nextId = 1;
-        let nextNoticeId = 1;
+        // ===== 데이터 관리 (localStorage 사용) =====
+let members = [];
+let notices = [];
+let currentUser = null;
+let nextId = 1;
+let nextNoticeId = 1;
 
-        // 관리자 계정
-        const ADMIN = { id: 'KMS', password: '1234*', name: '관리자', email: 'admin@church.com', phone: '02-2601-1591', isAdmin: true };
+// 관리자 계정 (고정)
+const ADMIN = { id: 'KMS', password: '1234*', name: '관리자', email: 'admin@church.com', phone: '02-2601-1591', isAdmin: true };
 
-        // ===== 모달 제어 =====
-        function openModal(type) {
-            document.getElementById('authModal').classList.add('active');
-            if (type === 'login') {
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('signupForm').style.display = 'none';
-                document.getElementById('loginId').value = '';
-                document.getElementById('loginPw').value = '';
-            } else {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('signupForm').style.display = 'block';
-                document.getElementById('signupName').value = '';
-                document.getElementById('signupId').value = '';
-                document.getElementById('signupPw').value = '';
-                document.getElementById('signupEmail').value = '';
-                document.getElementById('signupPhone').value = '';
-                document.getElementById('termsAgree').checked = false;
-            }
-        }
+// ===== 데이터 저장/불러오기 =====
+function saveData() {
+    try {
+        localStorage.setItem('church_members', JSON.stringify(members));
+        localStorage.setItem('church_notices', JSON.stringify(notices));
+        localStorage.setItem('church_nextId', String(nextId));
+        localStorage.setItem('church_nextNoticeId', String(nextNoticeId));
+    } catch (e) {
+        console.warn('데이터 저장 실패:', e);
+    }
+}
 
-        function closeModal() {
-            document.getElementById('authModal').classList.remove('active');
-        }
+function loadData() {
+    try {
+        const savedMembers = localStorage.getItem('church_members');
+        const savedNotices = localStorage.getItem('church_notices');
+        const savedNextId = localStorage.getItem('church_nextId');
+        const savedNextNoticeId = localStorage.getItem('church_nextNoticeId');
 
-        function toggleAuthForm(type) {
-            if (type === 'login') {
-                document.getElementById('loginForm').style.display = 'block';
-                document.getElementById('signupForm').style.display = 'none';
-            } else {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('signupForm').style.display = 'block';
-            }
-        }
-
-        document.getElementById('authModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        // ===== 회원가입 =====
-        function handleSignup() {
-            const name = document.getElementById('signupName').value.trim();
-            const id = document.getElementById('signupId').value.trim();
-            const pw = document.getElementById('signupPw').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const phone = document.getElementById('signupPhone').value.trim();
-            const agreed = document.getElementById('termsAgree').checked;
-
-            if (!name || !id || !pw || !email || !phone) {
-                alert('모든 필드를 입력해주세요.');
-                return;
-            }
-            if (pw.length < 6) {
-                alert('비밀번호는 6자 이상으로 설정해주세요.');
-                return;
-            }
-            if (!agreed) {
-                alert('개인정보 수집 및 이용에 동의해주세요.');
-                return;
-            }
-            if (members.find(m => m.userId === id)) {
-                alert('이미 사용 중인 아이디입니다.');
-                return;
-            }
-
-            members.push({
-                id: nextId++,
-                userId: id,
-                password: pw,
-                name: name,
-                email: email,
-                phone: phone,
-                joinedAt: new Date().toLocaleString('ko-KR'),
-                isAdmin: false
-            });
-
-            alert('🎉 회원가입이 완료되었습니다! 로그인해주세요.');
-            toggleAuthForm('login');
-        }
-
-        // ===== 로그인 =====
-        function handleLogin() {
-            const id = document.getElementById('loginId').value.trim();
-            const pw = document.getElementById('loginPw').value.trim();
-
-            if (!id || !pw) {
-                alert('아이디와 비밀번호를 입력해주세요.');
-                return;
-            }
-
-            if (id === ADMIN.id && pw === ADMIN.password) {
-                currentUser = { ...ADMIN, isAdmin: true };
-                updateUI();
-                closeModal();
-                alert('👑 관리자로 로그인되었습니다.');
-                return;
-            }
-
-            const member = members.find(m => m.userId === id && m.password === pw);
-            if (member) {
-                currentUser = { ...member, isAdmin: false };
-                updateUI();
-                closeModal();
-                alert(`🙏 ${member.name}님, 환영합니다!`);
-                return;
-            }
-
-            alert('아이디 또는 비밀번호가 일치하지 않습니다.');
-        }
-
-        // ===== 로그아웃 =====
-        function handleLogout() {
-            currentUser = null;
-            updateUI();
-            alert('로그아웃되었습니다.');
-        }
-
-        // ===== UI 업데이트 =====
-        function updateUI() {
-            const authButtons = document.getElementById('authButtons');
-            const userStatus = document.getElementById('userStatus');
-            const displayName = document.getElementById('displayUserName');
-            const adminBadge = document.getElementById('adminBadge');
-
-            if (currentUser) {
-                authButtons.style.display = 'none';
-                userStatus.style.display = 'flex';
-                displayName.textContent = currentUser.name || currentUser.userId || '사용자';
-                adminBadge.style.display = currentUser.isAdmin ? 'inline' : 'none';
-            } else {
-                authButtons.style.display = 'flex';
-                userStatus.style.display = 'none';
-            }
-        }
-
-        // ===== 공지사항 렌더링 =====
-        function renderNotices() {
-            const container = document.getElementById('noticeList');
-            const emptyMsg = document.getElementById('emptyNoticeMessage');
-            
-            if (notices.length === 0) {
-                container.innerHTML = '';
-                emptyMsg.style.display = 'block';
-                return;
-            }
-            emptyMsg.style.display = 'none';
-
-            container.innerHTML = notices.map((notice, idx) => `
-                <div class="notice-item" onclick="viewNotice(${idx})">
-                    <div class="title">
-                        ${notice.title}
-                        ${idx === 0 ? ' <span class="badge-new">NEW</span>' : ''}
-                        <span class="badge-admin">관리자</span>
-                    </div>
-                    <div class="meta">
-                        <span><i class="far fa-calendar-alt mr-1"></i>${notice.date}</span>
-                        <span><i class="far fa-eye mr-1"></i>${notice.views || 0}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ===== 공지사항 상세 보기 =====
-        function viewNotice(index) {
-            const notice = notices[index];
-            if (!notice) return;
-            
-            notice.views = (notice.views || 0) + 1;
-            renderNotices();
-            renderAdminNotices();
-
-            const container = document.getElementById('noticeDetailContent');
-            container.innerHTML = `
-                <div class="notice-detail">
-                    <div class="title">${notice.title}</div>
-                    <div class="meta">
-                        <span><i class="far fa-calendar-alt mr-1"></i>${notice.date}</span>
-                        <span><i class="far fa-eye mr-1"></i>${notice.views}</span>
-                        <span class="badge-admin">관리자</span>
-                    </div>
-                    <div class="content">${notice.content}</div>
-                </div>
-            `;
-            document.getElementById('noticeDetailModal').classList.add('active');
-        }
-
-        function closeNoticeDetailModal() {
-            document.getElementById('noticeDetailModal').classList.remove('active');
-        }
-        document.getElementById('noticeDetailModal').addEventListener('click', function(e) {
-            if (e.target === this) closeNoticeDetailModal();
-        });
-
-        // ===== 관리자 패널 =====
-        function openAdminPanel() {
-            if (!currentUser || !currentUser.isAdmin) {
-                alert('관리자 권한이 필요합니다.');
-                return;
-            }
-            renderMemberTable();
-            renderAdminNotices();
-            document.getElementById('adminModal').classList.add('active');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.remove('active');
-        }
-        document.getElementById('adminModal').addEventListener('click', function(e) {
-            if (e.target === this) closeAdminModal();
-        });
-
-        // ===== 관리자 탭 전환 =====
-        function switchAdminTab(tab, btn) {
-            document.querySelectorAll('.tab-menu button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-            if (tab === 'members') {
-                document.getElementById('adminMembersTab').classList.add('active');
-                renderMemberTable();
-            } else {
-                document.getElementById('adminNoticesTab').classList.add('active');
-                renderAdminNotices();
-            }
-        }
-
-        // ===== 회원 명부 렌더링 =====
-        function renderMemberTable() {
-            const tbody = document.getElementById('memberTableBody');
-            const count = document.getElementById('memberCount');
-            
-            if (members.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#B0A89A;">등록된 회원이 없습니다.</td></tr>`;
-                count.textContent = '0';
-                return;
-            }
-
-            count.textContent = members.length;
-            tbody.innerHTML = members.map((m, idx) => `
-                <tr>
-                    <td>${idx + 1}</td>
-                    <td><strong>${m.name}</strong></td>
-                    <td>${m.userId}</td>
-                    <td>${m.email}</td>
-                    <td>${m.phone}</td>
-                    <td style="font-size:0.8rem;color:#7A6B62;">${m.joinedAt}</td>
-                </tr>
-            `).join('');
-        }
-
-        // ===== 관리자 공지사항 렌더링 =====
-        function renderAdminNotices() {
-            const container = document.getElementById('adminNoticeList');
-            const count = document.getElementById('adminNoticeCount');
-            
-            if (notices.length === 0) {
-                container.innerHTML = `<p style="text-align:center;padding:40px;color:#B0A89A;">등록된 공지사항이 없습니다.</p>`;
-                count.textContent = '0';
-                return;
-            }
-
-            count.textContent = notices.length;
-            container.innerHTML = notices.map((notice, idx) => `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #E8E1D3;">
-                    <div>
-                        <span style="font-weight:600; color:#2D2421;">${notice.title}</span>
-                        <span style="font-size:0.8rem; color:#7A6B62; margin-left:12px;">${notice.date}</span>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <span style="font-size:0.8rem; color:#7A6B62;">조회 ${notice.views || 0}</span>
-                        <button onclick="deleteNotice(${idx})" style="background:none; border:none; color:#D06B4A; cursor:pointer; font-size:0.85rem;">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ===== 공지사항 작성 =====
-        function openWriteNoticeModal() {
-            if (!currentUser || !currentUser.isAdmin) {
-                alert('관리자만 작성할 수 있습니다.');
-                return;
-            }
-            document.getElementById('noticeTitle').value = '';
-            document.getElementById('noticeContent').value = '';
-            document.getElementById('writeNoticeModal').classList.add('active');
-        }
-
-        function closeWriteNoticeModal() {
-            document.getElementById('writeNoticeModal').classList.remove('active');
-        }
-        document.getElementById('writeNoticeModal').addEventListener('click', function(e) {
-            if (e.target === this) closeWriteNoticeModal();
-        });
-
-        function saveNotice() {
-            const title = document.getElementById('noticeTitle').value.trim();
-            const content = document.getElementById('noticeContent').value.trim();
-
-            if (!title || !content) {
-                alert('제목과 내용을 모두 입력해주세요.');
-                return;
-            }
-
-            notices.unshift({
-                id: nextNoticeId++,
-                title: title,
-                content: content,
-                date: new Date().toLocaleString('ko-KR'),
-                views: 0
-            });
-
-            closeWriteNoticeModal();
-            renderNotices();
-            renderAdminNotices();
-            alert('✅ 공지사항이 등록되었습니다.');
-        }
-
-        // ===== 공지사항 삭제 =====
-        function deleteNotice(index) {
-            if (!confirm('이 공지사항을 삭제하시겠습니까?')) return;
-            notices.splice(index, 1);
-            renderAdminNotices();
-            renderNotices();
-            alert('🗑️ 공지사항이 삭제되었습니다.');
-        }
-
-        // ===== 엑셀 다운로드 =====
-        function exportToExcel() {
-            if (!currentUser || !currentUser.isAdmin) {
-                alert('관리자 권한이 필요합니다.');
-                return;
-            }
-
-            if (members.length === 0) {
-                alert('내보낼 회원 데이터가 없습니다.');
-                return;
-            }
-
-            const data = members.map((m, idx) => ({
-                '번호': idx + 1,
-                '이름': m.name,
-                '아이디': m.userId,
-                '이메일': m.email,
-                '연락처': m.phone,
-                '가입일': m.joinedAt
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(data);
-            ws['!cols'] = [
-                { wch: 6 }, { wch: 12 }, { wch: 15 }, { wch: 25 }, { wch: 18 }, { wch: 22 }
+        if (savedMembers) {
+            members = JSON.parse(savedMembers);
+        } else {
+            // 초기 샘플 데이터
+            members = [
+                { id: 1, userId: 'hong', password: '123456', name: '홍길동', email: 'hong@email.com', phone: '010-1234-5678', joinedAt: new Date().toLocaleString('ko-KR'), isAdmin: false },
+                { id: 2, userId: 'kim', password: '123456', name: '김성은', email: 'kim@email.com', phone: '010-2345-6789', joinedAt: new Date().toLocaleString('ko-KR'), isAdmin: false }
             ];
-
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, '회원명부');
-            XLSX.writeFile(wb, `생명의강교회_회원명부_${new Date().toISOString().slice(0,10)}.xlsx`);
-            
-            alert('✅ 회원 명부가 엑셀 파일로 다운로드되었습니다.');
         }
 
-        // ===== 초기화 =====
-        document.addEventListener('DOMContentLoaded', function() {
-            const logo = document.querySelector('nav a');
-            if (logo) {
-                logo.addEventListener('dblclick', function(e) {
-                    e.preventDefault();
-                    if (currentUser && currentUser.isAdmin) {
-                        openAdminPanel();
-                    } else if (currentUser) {
-                        alert('관리자 권한이 없습니다. 관리자 계정(KMS)으로 로그인해주세요.');
-                    } else {
-                        alert('관리자로 로그인 후 이용 가능합니다.\n관리자 ID: KMS / PW: 1234*');
-                    }
-                });
-            }
+        if (savedNotices) {
+            notices = JSON.parse(savedNotices);
+        } else {
+            // 초기 샘플 공지사항
+            notices = [
+                { id: 1, title: '🙏 2025년 부흥회 안내', content: '생명의 강 교회 가족 여러분께,\n\n오는 4월 20일(주일)부터 4월 25일(금)까지 특별 부흥회가 있습니다.\n\n■ 일정: 4월 20일(주일) ~ 4월 25일(금) 매일 저녁 7시 30분\n■ 강사: 김목사님 (생명의 강 교회 담임목사)\n■ 주제: "성령의 불로 충만하라"\n\n모든 성도님들의 많은 참여와 기도를 부탁드립니다.\n\n생명의 강 교회 드림', date: new Date().toLocaleString('ko-KR'), views: 5 },
+                { id: 2, title: '📢 3월 새벽기도회 안내', content: '사랑하는 성도님들께,\n\n3월 한 달간 특별 새벽기도회를 진행합니다.\n\n■ 기간: 3월 1일(토) ~ 3월 31일(월)\n■ 시간: 매일 새벽 5시 30분\n■ 장소: 본당\n\n새벽에 주님을 찾는 귀한 시간이 되길 바랍니다.\n\n생명의 강 교회 드림', date: new Date().toLocaleString('ko-KR'), views: 3 }
+            ];
+        }
 
-            if (members.length === 0) {
-                members.push({
-                    id: nextId++,
-                    userId: 'hong',
-                    password: '123456',
-                    name: '홍길동',
-                    email: 'hong@email.com',
-                    phone: '010-1234-5678',
-                    joinedAt: new Date().toLocaleString('ko-KR'),
-                    isAdmin: false
-                });
-                members.push({
-                    id: nextId++,
-                    userId: 'kim',
-                    password: '123456',
-                    name: '김성은',
-                    email: 'kim@email.com',
-                    phone: '010-2345-6789',
-                    joinedAt: new Date().toLocaleString('ko-KR'),
-                    isAdmin: false
-                });
-            }
+        if (savedNextId) {
+            nextId = parseInt(savedNextId);
+        } else {
+            nextId = 3;
+        }
 
-            if (notices.length === 0) {
-                notices.push({
-                    id: nextNoticeId++,
-                    title: '🙏 2025년 부흥회 안내',
-                    content: '생명의 강 교회 가족 여러분께,\n\n오는 4월 20일(주일)부터 4월 25일(금)까지 특별 부흥회가 있습니다.\n\n■ 일정: 4월 20일(주일) ~ 4월 25일(금) 매일 저녁 7시 30분\n■ 강사: 김목사님 (생명의 강 교회 담임목사)\n■ 주제: "성령의 불로 충만하라"\n\n모든 성도님들의 많은 참여와 기도를 부탁드립니다.\n\n생명의 강 교회 드림',
-                    date: new Date().toLocaleString('ko-KR'),
-                    views: 5
-                });
-                notices.push({
-                    id: nextNoticeId++,
-                    title: '📢 3월 새벽기도회 안내',
-                    content: '사랑하는 성도님들께,\n\n3월 한 달간 특별 새벽기도회를 진행합니다.\n\n■ 기간: 3월 1일(토) ~ 3월 31일(월)\n■ 시간: 매일 새벽 5시 30분\n■ 장소: 본당\n\n새벽에 주님을 찾는 귀한 시간이 되길 바랍니다.\n\n생명의 강 교회 드림',
-                    date: new Date().toLocaleString('ko-KR'),
-                    views: 3
-                });
-            }
+        if (savedNextNoticeId) {
+            nextNoticeId = parseInt(savedNextNoticeId);
+        } else {
+            nextNoticeId = 3;
+        }
 
-            updateUI();
-            renderNotices();
+    } catch (e) {
+        console.warn('데이터 로드 실패:', e);
+        // 오류 시 기본 데이터 설정
+        members = [
+            { id: 1, userId: 'hong', password: '123456', name: '홍길동', email: 'hong@email.com', phone: '010-1234-5678', joinedAt: new Date().toLocaleString('ko-KR'), isAdmin: false },
+            { id: 2, userId: 'kim', password: '123456', name: '김성은', email: 'kim@email.com', phone: '010-2345-6789', joinedAt: new Date().toLocaleString('ko-KR'), isAdmin: false }
+        ];
+        notices = [
+            { id: 1, title: '🙏 2025년 부흥회 안내', content: '생명의 강 교회 가족 여러분께,\n\n오는 4월 20일(주일)부터 4월 25일(금)까지 특별 부흥회가 있습니다.\n\n■ 일정: 4월 20일(주일) ~ 4월 25일(금) 매일 저녁 7시 30분\n■ 강사: 김목사님 (생명의 강 교회 담임목사)\n■ 주제: "성령의 불로 충만하라"\n\n모든 성도님들의 많은 참여와 기도를 부탁드립니다.\n\n생명의 강 교회 드림', date: new Date().toLocaleString('ko-KR'), views: 5 },
+            { id: 2, title: '📢 3월 새벽기도회 안내', content: '사랑하는 성도님들께,\n\n3월 한 달간 특별 새벽기도회를 진행합니다.\n\n■ 기간: 3월 1일(토) ~ 3월 31일(월)\n■ 시간: 매일 새벽 5시 30분\n■ 장소: 본당\n\n새벽에 주님을 찾는 귀한 시간이 되길 바랍니다.\n\n생명의 강 교회 드림', date: new Date().toLocaleString('ko-KR'), views: 3 }
+        ];
+        nextId = 3;
+        nextNoticeId = 3;
+    }
+}
+
+// ===== 데이터 변경 시 자동 저장 =====
+function saveAndRender() {
+    saveData();
+    renderNotices();
+    renderAdminNotices();
+    renderMemberTable();
+}
+
+// ===== 모달 제어 =====
+function openModal(type) {
+    document.getElementById('authModal').classList.add('active');
+    if (type === 'login') {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('loginId').value = '';
+        document.getElementById('loginPw').value = '';
+    } else {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('signupForm').style.display = 'block';
+        document.getElementById('signupName').value = '';
+        document.getElementById('signupId').value = '';
+        document.getElementById('signupPw').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPhone').value = '';
+        document.getElementById('termsAgree').checked = false;
+    }
+}
+
+function closeModal() {
+    document.getElementById('authModal').classList.remove('active');
+}
+
+function toggleAuthForm(type) {
+    if (type === 'login') {
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('signupForm').style.display = 'none';
+    } else {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('signupForm').style.display = 'block';
+    }
+}
+
+document.getElementById('authModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// ===== 회원가입 =====
+function handleSignup() {
+    const name = document.getElementById('signupName').value.trim();
+    const id = document.getElementById('signupId').value.trim();
+    const pw = document.getElementById('signupPw').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const phone = document.getElementById('signupPhone').value.trim();
+    const agreed = document.getElementById('termsAgree').checked;
+
+    if (!name || !id || !pw || !email || !phone) {
+        alert('모든 필드를 입력해주세요.');
+        return;
+    }
+    if (pw.length < 6) {
+        alert('비밀번호는 6자 이상으로 설정해주세요.');
+        return;
+    }
+    if (!agreed) {
+        alert('개인정보 수집 및 이용에 동의해주세요.');
+        return;
+    }
+    if (members.find(m => m.userId === id)) {
+        alert('이미 사용 중인 아이디입니다.');
+        return;
+    }
+
+    members.push({
+        id: nextId++,
+        userId: id,
+        password: pw,
+        name: name,
+        email: email,
+        phone: phone,
+        joinedAt: new Date().toLocaleString('ko-KR'),
+        isAdmin: false
+    });
+
+    saveData();
+    alert('🎉 회원가입이 완료되었습니다! 로그인해주세요.');
+    toggleAuthForm('login');
+}
+
+// ===== 로그인 =====
+function handleLogin() {
+    const id = document.getElementById('loginId').value.trim();
+    const pw = document.getElementById('loginPw').value.trim();
+
+    if (!id || !pw) {
+        alert('아이디와 비밀번호를 입력해주세요.');
+        return;
+    }
+
+    if (id === ADMIN.id && pw === ADMIN.password) {
+        currentUser = { ...ADMIN, isAdmin: true };
+        updateUI();
+        closeModal();
+        alert('👑 관리자로 로그인되었습니다.');
+        return;
+    }
+
+    const member = members.find(m => m.userId === id && m.password === pw);
+    if (member) {
+        currentUser = { ...member, isAdmin: false };
+        updateUI();
+        closeModal();
+        alert(`🙏 ${member.name}님, 환영합니다!`);
+        return;
+    }
+
+    alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+}
+
+// ===== 로그아웃 =====
+function handleLogout() {
+    currentUser = null;
+    updateUI();
+    alert('로그아웃되었습니다.');
+}
+
+// ===== UI 업데이트 =====
+function updateUI() {
+    const authButtons = document.getElementById('authButtons');
+    const userStatus = document.getElementById('userStatus');
+    const displayName = document.getElementById('displayUserName');
+    const adminBadge = document.getElementById('adminBadge');
+
+    if (currentUser) {
+        authButtons.style.display = 'none';
+        userStatus.style.display = 'flex';
+        displayName.textContent = currentUser.name || currentUser.userId || '사용자';
+        adminBadge.style.display = currentUser.isAdmin ? 'inline' : 'none';
+    } else {
+        authButtons.style.display = 'flex';
+        userStatus.style.display = 'none';
+    }
+}
+
+// ===== 공지사항 렌더링 =====
+function renderNotices() {
+    const container = document.getElementById('noticeList');
+    const emptyMsg = document.getElementById('emptyNoticeMessage');
+    
+    if (!container) return;
+    
+    if (notices.length === 0) {
+        container.innerHTML = '';
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        return;
+    }
+    if (emptyMsg) emptyMsg.style.display = 'none';
+
+    container.innerHTML = notices.map((notice, idx) => `
+        <div class="notice-item" onclick="viewNotice(${idx})">
+            <div class="title">
+                ${notice.title}
+                ${idx === 0 ? ' <span class="badge-new">NEW</span>' : ''}
+                <span class="badge-admin">관리자</span>
+            </div>
+            <div class="meta">
+                <span><i class="far fa-calendar-alt mr-1"></i>${notice.date}</span>
+                <span><i class="far fa-eye mr-1"></i>${notice.views || 0}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== 공지사항 상세 보기 =====
+function viewNotice(index) {
+    const notice = notices[index];
+    if (!notice) return;
+    
+    notice.views = (notice.views || 0) + 1;
+    saveData();
+    renderNotices();
+    renderAdminNotices();
+
+    const container = document.getElementById('noticeDetailContent');
+    container.innerHTML = `
+        <div class="notice-detail">
+            <div class="title">${notice.title}</div>
+            <div class="meta">
+                <span><i class="far fa-calendar-alt mr-1"></i>${notice.date}</span>
+                <span><i class="far fa-eye mr-1"></i>${notice.views}</span>
+                <span class="badge-admin">관리자</span>
+            </div>
+            <div class="content">${notice.content}</div>
+        </div>
+    `;
+    document.getElementById('noticeDetailModal').classList.add('active');
+}
+
+function closeNoticeDetailModal() {
+    document.getElementById('noticeDetailModal').classList.remove('active');
+}
+document.getElementById('noticeDetailModal').addEventListener('click', function(e) {
+    if (e.target === this) closeNoticeDetailModal();
+});
+
+// ===== 관리자 패널 =====
+function openAdminPanel() {
+    if (!currentUser || !currentUser.isAdmin) {
+        alert('관리자 권한이 필요합니다.');
+        return;
+    }
+    renderMemberTable();
+    renderAdminNotices();
+    document.getElementById('adminModal').classList.add('active');
+}
+
+function closeAdminModal() {
+    document.getElementById('adminModal').classList.remove('active');
+}
+document.getElementById('adminModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAdminModal();
+});
+
+// ===== 관리자 탭 전환 =====
+function switchAdminTab(tab, btn) {
+    document.querySelectorAll('.tab-menu button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    if (tab === 'members') {
+        document.getElementById('adminMembersTab').classList.add('active');
+        renderMemberTable();
+    } else {
+        document.getElementById('adminNoticesTab').classList.add('active');
+        renderAdminNotices();
+    }
+}
+
+// ===== 회원 명부 렌더링 =====
+function renderMemberTable() {
+    const tbody = document.getElementById('memberTableBody');
+    const count = document.getElementById('memberCount');
+    
+    if (!tbody) return;
+    
+    if (members.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#B0A89A;">등록된 회원이 없습니다.</td></tr>`;
+        if (count) count.textContent = '0';
+        return;
+    }
+
+    if (count) count.textContent = members.length;
+    tbody.innerHTML = members.map((m, idx) => `
+        <tr>
+            <td>${idx + 1}</td>
+            <td><strong>${m.name}</strong></td>
+            <td>${m.userId}</td>
+            <td>${m.email}</td>
+            <td>${m.phone}</td>
+            <td style="font-size:0.8rem;color:#7A6B62;">${m.joinedAt}</td>
+        </tr>
+    `).join('');
+}
+
+// ===== 관리자 공지사항 렌더링 =====
+function renderAdminNotices() {
+    const container = document.getElementById('adminNoticeList');
+    const count = document.getElementById('adminNoticeCount');
+    
+    if (!container) return;
+    
+    if (notices.length === 0) {
+        container.innerHTML = `<p style="text-align:center;padding:40px;color:#B0A89A;">등록된 공지사항이 없습니다.</p>`;
+        if (count) count.textContent = '0';
+        return;
+    }
+
+    if (count) count.textContent = notices.length;
+    container.innerHTML = notices.map((notice, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #E8E1D3;">
+            <div>
+                <span style="font-weight:600; color:#2D2421;">${notice.title}</span>
+                <span style="font-size:0.8rem; color:#7A6B62; margin-left:12px;">${notice.date}</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <span style="font-size:0.8rem; color:#7A6B62;">조회 ${notice.views || 0}</span>
+                <button onclick="deleteNotice(${idx})" style="background:none; border:none; color:#D06B4A; cursor:pointer; font-size:0.85rem;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== 공지사항 작성 =====
+function openWriteNoticeModal() {
+    if (!currentUser || !currentUser.isAdmin) {
+        alert('관리자만 작성할 수 있습니다.');
+        return;
+    }
+    document.getElementById('noticeTitle').value = '';
+    document.getElementById('noticeContent').value = '';
+    document.getElementById('writeNoticeModal').classList.add('active');
+}
+
+function closeWriteNoticeModal() {
+    document.getElementById('writeNoticeModal').classList.remove('active');
+}
+document.getElementById('writeNoticeModal').addEventListener('click', function(e) {
+    if (e.target === this) closeWriteNoticeModal();
+});
+
+function saveNotice() {
+    const title = document.getElementById('noticeTitle').value.trim();
+    const content = document.getElementById('noticeContent').value.trim();
+
+    if (!title || !content) {
+        alert('제목과 내용을 모두 입력해주세요.');
+        return;
+    }
+
+    notices.unshift({
+        id: nextNoticeId++,
+        title: title,
+        content: content,
+        date: new Date().toLocaleString('ko-KR'),
+        views: 0
+    });
+
+    saveData();
+    closeWriteNoticeModal();
+    renderNotices();
+    renderAdminNotices();
+    alert('✅ 공지사항이 등록되었습니다.');
+}
+
+// ===== 공지사항 삭제 =====
+function deleteNotice(index) {
+    if (!confirm('이 공지사항을 삭제하시겠습니까?')) return;
+    notices.splice(index, 1);
+    saveData();
+    renderAdminNotices();
+    renderNotices();
+    alert('🗑️ 공지사항이 삭제되었습니다.');
+}
+
+// ===== 엑셀 다운로드 =====
+function exportToExcel() {
+    if (!currentUser || !currentUser.isAdmin) {
+        alert('관리자 권한이 필요합니다.');
+        return;
+    }
+
+    if (members.length === 0) {
+        alert('내보낼 회원 데이터가 없습니다.');
+        return;
+    }
+
+    const data = members.map((m, idx) => ({
+        '번호': idx + 1,
+        '이름': m.name,
+        '아이디': m.userId,
+        '이메일': m.email,
+        '연락처': m.phone,
+        '가입일': m.joinedAt
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    ws['!cols'] = [
+        { wch: 6 }, { wch: 12 }, { wch: 15 }, { wch: 25 }, { wch: 18 }, { wch: 22 }
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '회원명부');
+    XLSX.writeFile(wb, `생명의강교회_회원명부_${new Date().toISOString().slice(0,10)}.xlsx`);
+    
+    alert('✅ 회원 명부가 엑셀 파일로 다운로드되었습니다.');
+}
+
+// ===== 초기화 =====
+document.addEventListener('DOMContentLoaded', function() {
+    // 데이터 로드
+    loadData();
+    
+    // 로고 더블클릭 관리자 패널
+    const logo = document.querySelector('nav a');
+    if (logo) {
+        logo.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+            if (currentUser && currentUser.isAdmin) {
+                openAdminPanel();
+            } else if (currentUser) {
+                alert('관리자 권한이 없습니다. 관리자 계정(KMS)으로 로그인해주세요.');
+            } else {
+                alert('관리자로 로그인 후 이용 가능합니다.\n관리자 ID: KMS / PW: 1234*');
+            }
         });
+    }
 
-        // ===== 키보드 단축키 =====
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                e.preventDefault();
-                if (currentUser && currentUser.isAdmin) {
-                    openAdminPanel();
-                } else {
-                    alert('관리자로 로그인 후 이용 가능합니다.\n관리자 ID: KMS / PW: 1234*');
-                }
-            }
-        });
+    updateUI();
+    renderNotices();
+});
 
-        console.log('🙏 생명의 강 교회 홈페이지에 오신 것을 환영합니다!');
-        console.log('👑 관리자: ID: KMS, PW: 1234*');
-        console.log('📋 단축키: Ctrl+Shift+A = 관리자 패널');
+// ===== 키보드 단축키 =====
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        if (currentUser && currentUser.isAdmin) {
+            openAdminPanel();
+        } else {
+            alert('관리자로 로그인 후 이용 가능합니다.\n관리자 ID: KMS / PW: 1234*');
+        }
+    }
+});
+
+console.log('🙏 생명의 강 교회 홈페이지에 오신 것을 환영합니다!');
+console.log('👑 관리자: ID: KMS, PW: 1234*');
+console.log('📋 단축키: Ctrl+Shift+A = 관리자 패널');
+console.log('💾 데이터는 브라우저에 자동 저장됩니다.');        
     </script>
 
 </body>
