@@ -584,7 +584,7 @@
         </div>
     </nav>
 
-    <!-- ==================== 히어로 섹션 ==================== -->
+    <!-- ==================== 히어로 섹션 (이미지 교체 완료) ==================== -->
     <section id="home" class="max-w-7xl mx-auto px-6 pt-8 pb-24 lg:pt-16 lg:pb-32 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10">
         <div class="lg:col-span-6 flex flex-col items-start text-left order-2 lg:order-1">
             <span class="text-[#D06B4A] text-sm font-medium uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -610,8 +610,9 @@
         </div>
         <div class="lg:col-span-6 relative order-1 lg:order-2">
             <div class="absolute inset-0 bg-[#E8E1D3] rounded-[2rem] transform rotate-3 scale-[0.98] translate-x-2 translate-y-4 -z-10"></div>
-            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070&auto=format&fit=crop" 
-                 alt="따뜻한 교회 공동체" 
+            <!-- ✅ 이미지 교체: image/2.png -->
+            <img src="image/2.png" 
+                 alt="생명의 강 교회" 
                  class="w-full h-[380px] lg:h-[520px] object-cover rounded-[2rem] shadow-sm brightness-95 contrast-125 saturate-50">
         </div>
     </section>
@@ -1186,7 +1187,6 @@
             const notice = notices[index];
             if (!notice) return;
             
-            // 조회수 증가
             notice.views = (notice.views || 0) + 1;
             renderNotices();
             renderAdminNotices();
@@ -1233,11 +1233,9 @@
 
         // ===== 관리자 탭 전환 =====
         function switchAdminTab(tab, btn) {
-            // 모든 탭 버튼 비활성화
             document.querySelectorAll('.tab-menu button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // 모든 탭 콘텐츠 숨김
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
             if (tab === 'members') {
@@ -1386,7 +1384,6 @@
 
         // ===== 초기화 =====
         document.addEventListener('DOMContentLoaded', function() {
-            // 로고 더블클릭 관리자 패널
             const logo = document.querySelector('nav a');
             if (logo) {
                 logo.addEventListener('dblclick', function(e) {
@@ -1401,7 +1398,6 @@
                 });
             }
 
-            // 샘플 데이터
             if (members.length === 0) {
                 members.push({
                     id: nextId++,
@@ -1425,7 +1421,6 @@
                 });
             }
 
-            // 샘플 공지사항
             if (notices.length === 0) {
                 notices.push({
                     id: nextNoticeId++,
